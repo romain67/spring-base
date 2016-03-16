@@ -1,2 +1,2 @@
-/src/main/resources/properties/local.properties
+src/main/resources/config/local.config.yml
 /target

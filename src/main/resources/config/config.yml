@@ -1,0 +1,28 @@
+production:
+  url:
+  name: Spring Base API
+  database:
+    driver: com.mysql.jdbc.Driver
+    url:
+    username:
+    password:
+  hibernate:
+    dialect: org.hibernate.dialect.MySQLDialect
+    show_sql: false
+    entity_manager:
+      packages_to_scan: com.roms.module.user.domain.model
+  i18n:
+    locale:
+      default: en
+staging:
+  url:
+  name: \[STAGING\] Spring Base API
+dev:
+  name: \[DEVELOP\] Spring Base API
+  hibernate:
+    show_sql: true
+test:
+  database:
+    url: jdbc:mysql://localhost:3306/springtest
+    username: springtest
+    password: springtest

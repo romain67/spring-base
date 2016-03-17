@@ -1,6 +1,6 @@
 package com.roms.module.user.controller;
 
-import java.util.List;
+import java.util.Collection;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -11,7 +11,6 @@ import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.roms.module.user.domain.dto.UserCreateDto;
 import com.roms.module.user.domain.model.User;
 import com.roms.module.user.service.UserService;
@@ -25,7 +24,7 @@ public class UserController {
 	private UserService userService;
 	
     @RequestMapping(method = RequestMethod.GET)
-    public List<User> getAll() {
+    public Collection<User> getAll() {
     	return userService.findAll();
     }
     

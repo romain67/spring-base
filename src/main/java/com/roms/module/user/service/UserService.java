@@ -1,10 +1,9 @@
 package com.roms.module.user.service;
 
-import java.util.List;
+import java.util.Collection;
 import org.hibernate.ObjectNotFoundException;
 import org.joda.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import com.roms.module.user.domain.dao.UserDao;
 import com.roms.module.user.domain.dto.UserCreateDto;
@@ -14,30 +13,21 @@ import com.roms.module.user.domain.model.User;
 public class UserService  {
 	
 	@Autowired
-	@Qualifier("userDao")
 	private UserDao userDao;
-	
-	public void setUserDao(UserDao userDao) {
-		this.userDao = userDao;
-	}
-	
-	public void save(User user)
-	{
+
+	public void save(User user) {
 		this.userDao.save(user);
 	}
 	
-	public User find(long id)
-	{
+	public User find(long id) {
 		return this.userDao.find(id);
 	}
 	
-	public List<User> findAll()
-	{
+	public Collection<User> findAll() {
 		return this.userDao.findAll();
 	}
 
-	public void delete(long id) 
-	{
+	public void delete(long id) {
 		User user = this.find(id);
 		
 		if (user == null) {

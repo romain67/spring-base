@@ -4,11 +4,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
+import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
+import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.orm.jpa.JpaVendorAdapter;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.Database;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.orm.hibernate4.HibernateTransactionManager;
-import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import java.util.Properties;
 
@@ -21,9 +27,21 @@ public class DataSourceConfig {
     private Environment environment;
 
     @Bean
+    public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
+        LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
+        em.setDataSource(dataSource());
+        em.setPackagesToScan(environment.getRequiredProperty("hibernate.entity_manager.packages_to_scan", String[].class));
+
+        JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
+        em.setJpaVendorAdapter(vendorAdapter);
+        em.setJpaProperties(additionalProperties());
+
+        return em;
+    }
+
+    @Bean
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
-
         dataSource.setDriverClassName(environment.getRequiredProperty("database.driver"));
         dataSource.setUrl(environment.getRequiredProperty("database.url"));
         dataSource.setUsername(environment.getRequiredProperty("database.username"));
@@ -33,28 +51,32 @@ public class DataSourceConfig {
     }
 
     @Bean
-    public LocalSessionFactoryBean sessionFactory() {
-        LocalSessionFactoryBean entityManagerFactoryBean = new LocalSessionFactoryBean();
-        entityManagerFactoryBean.setDataSource(dataSource());
-        entityManagerFactoryBean.setHibernateProperties(this.hibernateProperties());
-        entityManagerFactoryBean.setPackagesToScan(environment.getRequiredProperty("hibernate.entity_manager.packages_to_scan", String[].class));
-
-        return entityManagerFactoryBean;
-    }
-
-    @Bean
-    public HibernateTransactionManager transactionManager() {
-        HibernateTransactionManager transactionManager = new HibernateTransactionManager();
-        transactionManager.setSessionFactory(sessionFactory().getObject());
-        transactionManager.setDataSource(dataSource());
-
+    public PlatformTransactionManager transactionManager(EntityManagerFactory emf){
+        JpaTransactionManager transactionManager = new JpaTransactionManager();
+        transactionManager.setEntityManagerFactory(emf);
         return transactionManager;
     }
 
-    private Properties hibernateProperties() {
+    @Bean
+    public PersistenceExceptionTranslationPostProcessor exceptionTranslation(){
+        return new PersistenceExceptionTranslationPostProcessor();
+    }
+
+    @Bean(name = "jpaVendorAdapter")
+    public JpaVendorAdapter jpaVendorAdapter() {
+        HibernateJpaVendorAdapter jpaVendorAdapter = new HibernateJpaVendorAdapter();
+        jpaVendorAdapter.setShowSql(Boolean.valueOf(environment.getRequiredProperty("hibernate.show_sql")));
+        jpaVendorAdapter.setDatabase(Database.MYSQL);
+        jpaVendorAdapter.setDatabasePlatform(environment.getRequiredProperty("hibernate.dialect"));
+        jpaVendorAdapter.setGenerateDdl(false);
+        return jpaVendorAdapter;
+    }
+
+    private Properties additionalProperties() {
         Properties properties = new Properties();
-        properties.put("hibernate.dialect", environment.getRequiredProperty("hibernate.dialect"));
-        properties.put("hibernate.show_sql", environment.getRequiredProperty("hibernate.show_sql"));
+        properties.setProperty("hibernate.hbm2ddl.auto", environment.getRequiredProperty("hibernate.hbm2ddl.auto"));
+        properties.setProperty("hibernate.show_sql", environment.getRequiredProperty("hibernate.show_sql"));
+        properties.setProperty("hibernate.dialect", environment.getRequiredProperty("hibernate.dialect"));
         return properties;
     }
 

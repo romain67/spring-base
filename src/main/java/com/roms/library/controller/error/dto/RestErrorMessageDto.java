@@ -21,7 +21,7 @@ public class RestErrorMessageDto
 		this.setErrorCode(errorCode);
 	}
 
-	public String getMessage() {
+    public String getMessage() {
 		return message;
 	}
 
@@ -45,8 +45,7 @@ public class RestErrorMessageDto
 		this.errors = errors;
 	}
 	
-	public void addError(RestFieldErrorsDto error)
-	{
+	public void addError(RestFieldErrorsDto error) {
 		this.errors.add(error);
 	}
 	

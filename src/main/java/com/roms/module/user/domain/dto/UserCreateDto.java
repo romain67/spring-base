@@ -1,45 +1,47 @@
 package com.roms.module.user.domain.dto;
 
+import com.roms.library.validation.constraints.Unique;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
-
 
 public class UserCreateDto
 {
 
 	@Length(min = 2, max = 255)
-	private String firstname;
+	private String firstName;
 
 	@Length(min = 2, max = 255)
-	private String lastname;
+	private String lastName;
 
 	@NotBlank
 	@Length(min = 3, max = 255)
+    @Unique(daoName = "userDao", fieldName = "username")
 	private String username;
 
 	@NotBlank
 	@Email
+    @Unique(daoName = "userDao", fieldName = "email")
 	private String email;
 
 	@NotBlank
 	@Length(min = 8, max = 255)
 	private String password;
 
-	public String getFirstname() {
-		return firstname;
+	public String getFirstName() {
+		return firstName;
 	}
 
-	public void setFirstname(String firstname) {
-		this.firstname = firstname;
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
 	}
 
-	public String getLastname() {
-		return lastname;
+	public String getLastName() {
+		return lastName;
 	}
 
-	public void setLastname(String lastname) {
-		this.lastname = lastname;
+	public void setLastName(String lastname) {
+		this.lastName = lastName;
 	}
 
 	public String getUsername() {

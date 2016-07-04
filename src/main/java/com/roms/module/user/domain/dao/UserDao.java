@@ -5,4 +5,6 @@ import com.roms.module.user.domain.model.User;
 
 public interface UserDao extends GenericDaoInterface<User> {
 
+    User findByEmail(String email);
+
 }

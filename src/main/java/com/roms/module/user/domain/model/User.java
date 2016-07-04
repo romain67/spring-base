@@ -1,22 +1,18 @@
 package com.roms.module.user.domain.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.annotations.Type;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
-import org.hibernate.validator.constraints.NotEmpty;
 import org.joda.time.LocalDateTime;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.roms.library.datatype.serializer.JsonDateTimeSerializer;
+import java.util.ArrayList;
+import java.util.Collection;
 
 @Entity
 @Table(name="users")
@@ -24,37 +20,32 @@ public class User {
 	
 	@Id
 	@Column(name="id")
-	@GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 	
-	@Column(name="firstname")
+	@Column(name="first_name")
 	@Length(max = 255)
-	private String firstname;
+	private String firstName;
 	
-	@Column(name="lastname")
+	@Column(name="last_name")
 	@Length(max = 255)
-	private String lastname;
+	private String lastName;
 	
-	@Column(name="username")
+	@Column(name="username", unique=true)
 	@NotBlank
 	@Length(max = 255)
 	private String username;
 	
-	@Column(name="username_canonical")
+	@Column(name="username_canonical", unique=true)
 	@NotBlank
 	@Length(max = 255)
 	private String usernameCanonical;
 
-	@Column(name="email")
+	@Column(name="email", unique=true)
 	@NotBlank
 	@Email
 	private String email;
-	
-	@Column(name="salt")
-	@JsonIgnore
-	@NotBlank
-	private String salt;
-	
+
 	@Column(name="password")
 	@JsonIgnore
 	@NotBlank
@@ -70,11 +61,16 @@ public class User {
 	private LocalDateTime createdAt;
 	
 	@Column(name="last_login")
+    @Type(type="org.jadira.usertype.dateandtime.joda.PersistentLocalDateTime")
+    @JsonSerialize(using=JsonDateTimeSerializer.class)
 	private LocalDateTime lastLogin;
-	
-	@Column(name="role")
-	@NotEmpty
-	private String role;
+
+    @JsonManagedReference
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable( name = "users_roles",
+                joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+                inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
+    private Collection<Role> roles = new ArrayList<Role>();
 
 	public long getId() {
 		return id;
@@ -84,20 +80,20 @@ public class User {
 		this.id = id;
 	}
 
-	public String getFirstname() {
-		return firstname;
+	public String getFirstName() {
+		return firstName;
 	}
 
-	public void setFirstname(String firstname) {
-		this.firstname = firstname;
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
 	}
 
-	public String getLastname() {
-		return lastname;
+	public String getLastName() {
+		return lastName;
 	}
 
-	public void setLastname(String lastname) {
-		this.lastname = lastname;
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
 	}
 
 	public String getUsername() {
@@ -107,7 +103,7 @@ public class User {
 	public void setUsername(String username) {
 		this.username = username;
 	}
-	
+
 	public String getUsernameCanonical() {
 		return usernameCanonical;
 	}
@@ -124,14 +120,6 @@ public class User {
 		this.email = email;
 	}
 
-	public String getSalt() {
-		return salt;
-	}
-
-	public void setSalt(String salt) {
-		this.salt = salt;
-	}
-
 	public String getPassword() {
 		return password;
 	}
@@ -143,6 +131,10 @@ public class User {
 	public int getActive() {
 		return active;
 	}
+
+    public boolean isActive() {
+        return active == 1;
+    }
 
 	public void setActive(int active) {
 		this.active = active;
@@ -164,12 +156,24 @@ public class User {
 		this.lastLogin = lastLogin;
 	}
 
-	public String getRole() {
-		return role;
-	}
+    public Collection<Role> getRoles() {
+        return roles;
+    }
 
-	public void setRole(String role) {
-		this.role = role;
-	}
-	
+    public void setRoles(Collection<Role> roles) {
+        this.roles = roles;
+    }
+
+    public void addRole(Role role) {
+        if (! this.roles.contains(role)) {
+            this.roles.add(role);
+        }
+    }
+
+    public void removeRole(Role role) {
+        if (this.roles.contains(role)) {
+            this.roles.remove(role);
+        }
+    }
+
 }

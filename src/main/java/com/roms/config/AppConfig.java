@@ -3,6 +3,7 @@ package com.roms.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import javax.annotation.PostConstruct;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
@@ -17,7 +18,8 @@ import java.util.LinkedHashMap;
 @Configuration
 @Import({
         MvcConfig.class,
-        DataSourceConfig.class
+        DataSourceConfig.class,
+        SecurityConfig.class
 })
 public class AppConfig {
 

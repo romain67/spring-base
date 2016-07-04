@@ -22,12 +22,20 @@ public class UserController {
 
     @Autowired
 	private UserService userService;
-	
+
+    /**
+     * List users
+     * @return
+     */
     @RequestMapping(method = RequestMethod.GET)
     public Collection<User> getAll() {
     	return userService.findAll();
     }
-    
+
+    /**
+     * Get user
+     * @param id
+     */
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public ResponseEntity<User> get(@PathVariable("id") long id) {
 
@@ -39,20 +47,32 @@ public class UserController {
 
 		return new ResponseEntity<User>(user, HttpStatus.OK);
 	}
-	
+
+    /**
+     * Create user
+     * @param userDto
+     */
 	@RequestMapping(method = RequestMethod.POST)
-	public void post(@Validated @RequestBody UserCreateDto userDto) 
+	public ResponseEntity<User> post(@Validated @RequestBody UserCreateDto userDto)
 	{
-		System.out.println(userDto.getEmail());
 		User user = userService.create(userDto);
+		return new ResponseEntity<User>(user, HttpStatus.OK);
 	}
-	
+
+    /**
+     * Update user
+     * @param userDto
+     */
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
 	public void put(@Validated @RequestBody UserCreateDto userDto) 
 	{
 		
 	}
-	
+
+    /**
+     * Delete User
+     * @param id
+     */
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 	public void delete(@PathVariable int id) {
 		try {

@@ -30,7 +30,7 @@ public class UserDaoImpl extends GenericDaoImplementation<User>
 
     public Collection<User> findAll() {
         return entityManager.createQuery(
-                "SELECT u FROM User u " +
+                "SELECT DISTINCT u FROM User u " +
                         "LEFT JOIN FETCH u.roles r")
                 .getResultList();
     }

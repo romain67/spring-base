@@ -8,6 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
@@ -20,9 +21,16 @@ public class DefaultUserDetailService implements UserDetailsService {
 
 	@Transactional(readOnly=true)
 	@Override
-	public UserDetails loadUserByUsername(String email) {
+	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = userDao.findByEmail(email);
+        if (user == null) {
+            throw new UsernameNotFoundException("User not found");
+        }
+
         List<GrantedAuthority> authorities = buildUserAuthority(user.getRoles());
+        if (authorities.size() == 0) {
+            throw new UsernameNotFoundException("User '" + user.getId() + "' has not got required authorities to login");
+        }
 
         com.roms.library.security.userdetails.User userDetails = new com.roms.library.security.userdetails.User(
                 user.getEmail(), user.getPassword(), user.isActive(), true, true, true, authorities);

@@ -11,7 +11,9 @@ production:
     show_sql: false
     hbm2ddl.auto: update
     entity_manager:
-      packages_to_scan: com.roms.module.user.domain.model
+      packages_to_scan:
+        - com.roms.module.user.domain.model
+        - com.roms.module.translation.domain.model
   i18n:
     locale:
       default: en

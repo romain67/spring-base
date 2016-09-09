@@ -16,6 +16,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
+import java.util.ArrayList;
 import java.util.Properties;
 
 @Configuration
@@ -30,7 +31,7 @@ public class DataSourceConfig {
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(dataSource());
-        em.setPackagesToScan(environment.getRequiredProperty("hibernate.entity_manager.packages_to_scan", String[].class));
+        em.setPackagesToScan(listPackagesToScan());
 
         JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         em.setJpaVendorAdapter(vendorAdapter);
@@ -78,6 +79,26 @@ public class DataSourceConfig {
         properties.setProperty("hibernate.show_sql", environment.getRequiredProperty("hibernate.show_sql"));
         properties.setProperty("hibernate.dialect", environment.getRequiredProperty("hibernate.dialect"));
         return properties;
+    }
+
+    /**
+     * @return Model packages to scan from yaml array config
+     */
+    private String[] listPackagesToScan() {
+        int i = 0;
+        boolean nextPackage = true;
+        ArrayList packageList = new ArrayList();
+        while(nextPackage) {
+            String packageName = environment.getProperty("hibernate.entity_manager.packages_to_scan["+i+"]");
+            if (packageName != null) {
+                packageList.add(packageName);
+                i++;
+            } else {
+                nextPackage = false;
+            }
+        }
+
+        return (String[]) packageList.toArray(new String[0]);
     }
 
 }

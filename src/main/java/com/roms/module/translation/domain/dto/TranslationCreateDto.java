@@ -1,6 +1,7 @@
 package com.roms.module.translation.domain.dto;
 
-import com.roms.module.translation.validation.constraints.TranslationLanguage;
+import com.roms.library.validation.constraints.Enumerated;
+import com.roms.module.translation.domain.model.Translation;
 import com.roms.module.translation.validation.constraints.TranslationUnique;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
@@ -9,7 +10,6 @@ import javax.validation.constraints.NotNull;
 
 interface validLanguageFirst {}
 
-@TranslationLanguage(groups = validLanguageFirst.class)
 @TranslationUnique()
 @GroupSequence({validLanguageFirst.class, TranslationCreateDto.class})
 public class TranslationCreateDto implements TranslationDto {
@@ -19,6 +19,8 @@ public class TranslationCreateDto implements TranslationDto {
     private String code;
 
     @NotNull
+    @Enumerated(enumClazz=Translation.AvailableLanguage.class,
+            message="invalid_language", groups = validLanguageFirst.class)
     private String language;
 
     @NotBlank

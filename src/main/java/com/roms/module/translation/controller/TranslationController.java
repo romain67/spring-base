@@ -10,7 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import java.util.Collection;
+import java.util.List;
 
 @RestController("translationController")
 @RequestMapping("/translation")
@@ -24,7 +24,7 @@ public class TranslationController {
      * @return
      */
     @RequestMapping(method = RequestMethod.GET)
-    public Collection<Translation> getAll() {
+    public List<Translation> getAll() {
     	return translationService.findAll();
     }
 

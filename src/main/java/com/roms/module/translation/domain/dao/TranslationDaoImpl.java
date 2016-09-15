@@ -3,10 +3,8 @@ package com.roms.module.translation.domain.dao;
 import com.roms.library.dao.GenericDaoImplementation;
 import com.roms.module.translation.domain.model.Translation;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
-@Transactional
 @Repository("translationDao")
 public class TranslationDaoImpl extends GenericDaoImplementation<Translation> implements TranslationDao {
 

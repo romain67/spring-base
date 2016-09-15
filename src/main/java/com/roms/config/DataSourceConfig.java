@@ -47,15 +47,12 @@ public class DataSourceConfig {
         dataSource.setUrl(environment.getRequiredProperty("database.url"));
         dataSource.setUsername(environment.getRequiredProperty("database.username"));
         dataSource.setPassword(environment.getRequiredProperty("database.password"));
-
         return dataSource;
     }
 
     @Bean
     public PlatformTransactionManager transactionManager(EntityManagerFactory emf){
-        JpaTransactionManager transactionManager = new JpaTransactionManager();
-        transactionManager.setEntityManagerFactory(emf);
-        return transactionManager;
+        return new JpaTransactionManager(emf);
     }
 
     @Bean

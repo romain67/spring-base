@@ -1,13 +1,11 @@
 package com.roms.library.dao;
 
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import java.util.Collection;
+import java.util.List;
 
-@Transactional
 @Repository("GenericDaoInterface")
 public class GenericDaoImplementation<T> implements GenericDaoInterface<T> {
 
@@ -63,7 +61,7 @@ public class GenericDaoImplementation<T> implements GenericDaoInterface<T> {
         return entityManager.find(this.type, empId);
     }
 
-    public Collection<T> findAll() {
+    public List<T> findAll() {
         TypedQuery<T> query = entityManager.createQuery("SELECT d FROM " + this.type.getName() + " d", this.type);
         return query.getResultList();
     }

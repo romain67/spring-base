@@ -8,19 +8,19 @@ import org.hibernate.validator.constraints.NotBlank;
 import javax.validation.GroupSequence;
 import javax.validation.constraints.NotNull;
 
-interface validLanguageFirst {}
+interface ValidLanguageGroup {}
 
 @TranslationUnique()
-@GroupSequence({validLanguageFirst.class, TranslationCreateDto.class})
+@GroupSequence({ValidLanguageGroup.class, TranslationCreateDto.class})
 public class TranslationCreateDto implements TranslationDto {
 
-    @Length(max = 50)
+    @Length(max = 100)
     @NotBlank
     private String code;
 
     @NotNull
     @Enumerated(enumClazz=Translation.AvailableLanguage.class,
-            message="invalid_language", groups = validLanguageFirst.class)
+            message="{error.translation.invalid_language}", groups = ValidLanguageGroup.class)
     private String language;
 
     @NotBlank

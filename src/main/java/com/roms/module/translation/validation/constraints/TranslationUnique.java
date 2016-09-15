@@ -15,7 +15,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Documented
 public @interface TranslationUnique {
 
-    String message() default "{constraints.translationUnique}";
+    String message() default "{error.translation.unique}";
 
     Class<?>[] groups() default {};
 

@@ -17,15 +17,14 @@ import java.util.LinkedHashMap;
 
 @Configuration
 @Import({
-        MvcConfig.class,
-        DataSourceConfig.class,
-        SecurityConfig.class
+        DataSourceConfig.class
 })
+@ComponentScan({"com.roms"})
 public class AppConfig {
 
-    public static final String DEFAULT_ENVIRONMENT_NAME = "production";
-    public static final String CONFIG_FILE = "config/config.yml";
-    public static final String LOCAL_CONFIG_FILE = "config/local.config.yml";
+    private static final String DEFAULT_ENVIRONMENT_NAME = "production";
+    private static final String CONFIG_FILE = "config/config.yml";
+    private static final String LOCAL_CONFIG_FILE = "config/local.config.yml";
 
     @Autowired
     private StandardServletEnvironment environment;

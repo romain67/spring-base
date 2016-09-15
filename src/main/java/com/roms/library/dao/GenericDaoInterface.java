@@ -1,6 +1,6 @@
 package com.roms.library.dao;
 
-import java.util.Collection;
+import java.util.List;
 
 public interface GenericDaoInterface<T> {
 
@@ -8,6 +8,6 @@ public interface GenericDaoInterface<T> {
     Boolean delete(T emp);
     T edit(T emp);
     T find(Long empId);
-    Collection<T> findAll();
+    List<T> findAll();
 
 }

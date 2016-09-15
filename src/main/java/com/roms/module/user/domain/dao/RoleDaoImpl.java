@@ -5,7 +5,6 @@ import com.roms.module.user.domain.model.Role;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-@Transactional
 @Repository("roleDao")
 public class RoleDaoImpl extends GenericDaoImplementation<Role> implements RoleDao {
 

@@ -16,33 +16,27 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 public class ValidationErrorHandler
 {
 	private static final String BAD_REQUEST_ERROR_CODE = "invalid_value";
-
 	private RestErrorMessageDto restErrors;
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ResponseBody
 	public RestErrorMessageDto processValidationError(MethodArgumentNotValidException exception) {
-		
 		BindingResult result = exception.getBindingResult();
 		List<FieldError> errors = result.getFieldErrors();
 		
 		this.restErrors = new RestErrorMessageDto("Validation of DTO '" + result.getObjectName() + "' has fail", BAD_REQUEST_ERROR_CODE);
-		
 		this.processError(errors);
-		
 		return this.restErrors;
 	}
 	
-	private void processError(List<FieldError> errors)
-	{
+	private void processError(List<FieldError> errors) {
 		for (FieldError error : errors) {
 			this.restErrors.addError(this.processFieldErrors(error));
 		}
 	}
     
-	private RestFieldErrorsDto processFieldErrors(FieldError error) 
-	{
+	private RestFieldErrorsDto processFieldErrors(FieldError error) {
 		if (error == null) {
 			return null;
 		}

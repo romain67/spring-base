@@ -1,5 +1,8 @@
 package com.roms.library.security.rest;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -15,14 +18,18 @@ import java.io.IOException;
 @Component("restAuthenticationEntryPoint")
 public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
+    @Autowired
+    private MessageSource messageSource;
+
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response,
                          AuthenticationException exception) throws IOException, ServletException {
+
+        String message =  messageSource.getMessage("error.authentication.required", null, LocaleContextHolder.getLocale());
+        String json = "{\"message\":\"" + message + "\",\"errorCode\":\"error.authentication.required\"}";
+
         response.setContentType("application/json");
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
-        String json = "{\"message\":\"" + HttpStatus.UNAUTHORIZED.getReasonPhrase()
-                    + "\",\"errorCode\":\"error.authentication.fail\"}";
-
         response.getOutputStream().println(json);
     }
 

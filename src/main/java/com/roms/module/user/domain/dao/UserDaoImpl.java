@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Collection;
 import java.util.List;
 
-@Transactional
 @Repository("userDao")
 public class UserDaoImpl extends GenericDaoImplementation<User>
         implements UserDao, UniqueValidable {
@@ -28,7 +27,7 @@ public class UserDaoImpl extends GenericDaoImplementation<User>
         return users.size() > 0 ? users.get(0) : null;
 	}
 
-    public Collection<User> findAll() {
+    public List<User> findAll() {
         return entityManager.createQuery(
                 "SELECT DISTINCT u FROM User u " +
                         "LEFT JOIN FETCH u.roles r")

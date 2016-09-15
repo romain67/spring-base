@@ -28,6 +28,16 @@ public class Translation {
         public String code() {
             return this.code;
         }
+
+        public static AvailableLanguage fromCode(String code) {
+            for (AvailableLanguage element : AvailableLanguage.values()) {
+                if (code.equals(element.code)) {
+                    return element;
+                }
+            }
+            return null;
+        }
+
     }
 
 	@Id
@@ -36,7 +46,7 @@ public class Translation {
 	private long id;
 	
 	@Column(name="code")
-	@Length(max = 50)
+	@Length(max = 100)
 	@NotNull
 	private String code;
 
@@ -45,7 +55,7 @@ public class Translation {
     @NotNull
 	private AvailableLanguage language;
 
-    @Column(name="value")
+    @Column(name="value", columnDefinition="TEXT")
     @NotNull
     private String value;
 

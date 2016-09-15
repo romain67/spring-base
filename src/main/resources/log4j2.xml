@@ -15,11 +15,10 @@
         </Console>
         <RollingFile name="RollingFile-Appender"
                      fileName="${log-path}/application.log"
-                     filePattern="${archive}/application.log.%d{yyyy-MM-dd-hh-mm}.gz">
+                     filePattern="${archive}/application.log.%d{yyyy-MM-dd}.gz">
             <PatternLayout pattern="[%level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n"/>
             <Policies>
-                <TimeBasedTriggeringPolicy />
-                <SizeBasedTriggeringPolicy size="30 MB" />
+                <TimeBasedTriggeringPolicy interval="1"/>
             </Policies>
             <DefaultRolloverStrategy max="30" />
         </RollingFile>

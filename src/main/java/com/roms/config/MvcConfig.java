@@ -21,12 +21,7 @@ import org.springframework.validation.Validator;
 @DependsOn("propertySourcesResolver")
 @EnableWebMvc
 @ComponentScan({"com.roms"})
-@Import({SecurityConfig.class})
 public class MvcConfig extends WebMvcConfigurerAdapter {
-
-    private static final int RESOURCE_CACHE_TIME = 60 * 60 * 24 * 365; // Seconds
-    private static final int TRANSLATIONS_CACHE_TIME = 600; // Seconds
-    private static final int LOCAL_COOKIE_TIME = 60 * 60 * 24 * 30; // Seconds
 
     @Autowired
     private Environment environment;
@@ -38,7 +33,8 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
     public CookieLocaleResolver localeResolver() {
         CookieLocaleResolver localeResolver = new CookieLocaleResolver();
         localeResolver.setDefaultLocale(new Locale(environment.getRequiredProperty("i18n.locale.default")));
-        localeResolver.setCookieMaxAge(LOCAL_COOKIE_TIME);
+        localeResolver.setCookieMaxAge(
+                Integer.parseInt(environment.getRequiredProperty("i18n.locale.resolver.cookie_time")));
         return localeResolver;
     }
 
@@ -47,15 +43,18 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
         ReloadableResourceBundleMessageSource bundleMessageSource = new ReloadableResourceBundleMessageSource();
         bundleMessageSource.setBasename("/WEB-INF/messages/messages/");
         bundleMessageSource.setDefaultEncoding("UTF-8");
-        bundleMessageSource.setCacheSeconds(TRANSLATIONS_CACHE_TIME);
+        bundleMessageSource.setCacheSeconds(
+                Integer.parseInt(environment.getRequiredProperty("i18n.message_source.cache_time")));
         return bundleMessageSource;
     }
 
     @Bean
-    public DatabaseDrivenMessageSource messageSource(
-            @Qualifier("propertiesMessageSource") ReloadableResourceBundleMessageSource propertiesMessageSource) {
+    public DatabaseDrivenMessageSource messageSource() {
         DatabaseDrivenMessageSource messageSource = new DatabaseDrivenMessageSource(translationDao);
-        messageSource.setParentMessageSource(propertiesMessageSource);
+        messageSource.setUseCodeAsDefaultMessage(Boolean.parseBoolean(
+                environment.getRequiredProperty("i18n.message_source.use_code_as_default_message")
+        ));
+        messageSource.setParentMessageSource(propertiesMessageSource());
         return messageSource;
     }
 
@@ -71,13 +70,13 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
         // Static resources from both WEB-INF and webjars
         registry.addResourceHandler("/resources/**")
                 .addResourceLocations("/resources/")
-                .setCachePeriod(RESOURCE_CACHE_TIME);
+                .setCachePeriod(Integer.parseInt(environment.getRequiredProperty("resource.cache_time")));
     }
 
     @Bean
     public LocalValidatorFactoryBean validator() {
         LocalValidatorFactoryBean validator = new LocalValidatorFactoryBean();
-        validator.setValidationMessageSource(messageSource(propertiesMessageSource()));
+        validator.setValidationMessageSource(messageSource());
         return validator;
     }
 

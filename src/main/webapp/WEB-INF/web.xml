@@ -16,10 +16,6 @@
         <param-value>com.roms.config.AppConfig</param-value>
     </context-param>
 
-    <listener>
-        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-    </listener>
-
     <servlet>
         <servlet-name>rest</servlet-name>
         <servlet-class>

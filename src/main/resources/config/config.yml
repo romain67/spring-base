@@ -15,8 +15,15 @@ production:
         - com.roms.module.user.domain.model
         - com.roms.module.translation.domain.model
   i18n:
+    message_source:
+      cache_time: 600
+      use_code_as_default_message: true
     locale:
       default: en
+      resolver:
+        cookie_time: 31536000 # 1 year
+  resource:
+    cache_time: 31536000 # 1 year
 staging:
   url:
   name: \[STAGING\] Spring Base API
@@ -24,6 +31,11 @@ dev:
   name: \[DEVELOP\] Spring Base API
   hibernate:
     show_sql: true
+  i18n:
+    message_source:
+      cache_time: -1
+  resource:
+    cache_time: 0
 test:
   database:
     url: jdbc:mysql://localhost:3306/springtest

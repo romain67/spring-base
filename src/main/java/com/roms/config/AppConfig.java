@@ -3,9 +3,7 @@ package com.roms.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import javax.annotation.PostConstruct;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
 import org.springframework.core.env.*;
 import org.springframework.core.io.ByteArrayResource;
@@ -16,10 +14,6 @@ import java.io.*;
 import java.util.LinkedHashMap;
 
 @Configuration
-@Import({
-        DataSourceConfig.class
-})
-@ComponentScan({"com.roms"})
 public class AppConfig {
 
     private static final String DEFAULT_ENVIRONMENT_NAME = "production";

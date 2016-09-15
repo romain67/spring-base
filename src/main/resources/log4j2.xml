@@ -1,17 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="WARN">
-	<Appenders>
-		<Console name="CONSOLE" target="SYSTEM_OUT">
-			<PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
-		</Console>
-	</Appenders>
-	<Loggers>
-		<Root level="error">
-			<AppenderRef ref="Console" />
-		</Root>
-		<logger name="javabeat.net.util" level="TRACE" />
-		<Root level="ERROR">
-			<AppenderRef ref="CONSOLE"/>
-		</Root>
-	</Loggers>
+<Configuration monitorInterval="60">
+    <Properties>
+        <!-- Set log_path in env variable -->
+        <Property name="log-path">${sys:log_path}</Property>
+        <Property name="archive">${log-path}/archive</Property>
+    </Properties>
+    <Appenders>
+        <Console name="Console-Appender" target="SYSTEM_OUT">
+            <PatternLayout>
+                <pattern>
+                    [%level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n
+                </pattern>
+            </PatternLayout>
+        </Console>
+        <RollingFile name="RollingFile-Appender"
+                     fileName="${log-path}/application.log"
+                     filePattern="${archive}/application.log.%d{yyyy-MM-dd-hh-mm}.gz">
+            <PatternLayout pattern="[%level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy />
+                <SizeBasedTriggeringPolicy size="30 MB" />
+            </Policies>
+            <DefaultRolloverStrategy max="30" />
+        </RollingFile>
+    </Appenders>
+    <Loggers>
+        <Logger name="com.roms" level="debug" additivity="false">
+            <AppenderRef ref="RollingFile-Appender" level="info" />
+            <AppenderRef ref="Console-Appender" level="debug" />
+        </Logger>
+        <Root level="info">
+            <AppenderRef ref="RollingFile-Appender" level="warn" />
+            <AppenderRef ref="Console-Appender" level="info" />
+        </Root>
+    </Loggers>
 </Configuration>

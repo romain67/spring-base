@@ -32,6 +32,7 @@ public class DatabaseDrivenMessageSource extends AbstractMessageSource {
     }
 
     public void reload() {
+        logger.info("Load translations from database");
         translations.clear();
         translations.putAll(loadTranslations());
     }
@@ -54,7 +55,7 @@ public class DatabaseDrivenMessageSource extends AbstractMessageSource {
             try {
                 translation = getParentMessageSource().getMessage(code, null, locale);
             } catch (NoSuchMessageException e) {
-                logger.warn("Code '" + code + " for 'Locale '" + language.code() + "' was not found in translations");
+                logger.warn("Code '" + code + "' for Locale '" + language.code() + "' was not found in translations");
                 return null;
             }
         }

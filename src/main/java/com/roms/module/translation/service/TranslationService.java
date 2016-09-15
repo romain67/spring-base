@@ -58,7 +58,6 @@ public class TranslationService {
         translation.setCreatedAt(LocalDateTime.now());
         translation.setUpdatedAt(LocalDateTime.now());
     	this.save(translation);
-        reloadMessageSource();
 		return translation;
 	}
 

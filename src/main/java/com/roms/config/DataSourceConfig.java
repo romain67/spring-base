@@ -84,7 +84,7 @@ public class DataSourceConfig {
     private String[] listPackagesToScan() {
         int i = 0;
         boolean nextPackage = true;
-        ArrayList packageList = new ArrayList();
+        ArrayList<String> packageList = new ArrayList<String>();
         while(nextPackage) {
             String packageName = environment.getProperty("hibernate.entity_manager.packages_to_scan["+i+"]");
             if (packageName != null) {

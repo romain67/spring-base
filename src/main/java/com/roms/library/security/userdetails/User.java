@@ -8,6 +8,8 @@ import java.util.Collection;
  */
 public class User extends org.springframework.security.core.userdetails.User {
 
+    private static final long serialVersionUID = 5985765322810028590L;
+
     /**
      * Read only user entity
      */

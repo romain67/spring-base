@@ -17,7 +17,7 @@ public class UserDaoImpl extends GenericDaoImplementation<User>
     }
 
 	public User findByEmail(String email) {
-        List<User> users =  entityManager.createQuery(
+        List<User> users = (List<User>) entityManager.createQuery(
                 "SELECT DISTINCT u FROM User u " +
                         "LEFT JOIN FETCH u.roles r " +
                         "WHERE u.email = :email")
@@ -28,7 +28,7 @@ public class UserDaoImpl extends GenericDaoImplementation<User>
 	}
 
     public List<User> findAll() {
-        return entityManager.createQuery(
+        return (List<User>) entityManager.createQuery(
                 "SELECT DISTINCT u FROM User u " +
                         "LEFT JOIN FETCH u.roles r")
                 .getResultList();

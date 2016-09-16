@@ -14,7 +14,7 @@ public class TranslationDaoImpl extends GenericDaoImplementation<Translation> im
 
     @Override
     public Translation findByCodeAndLanguage(String code, Translation.AvailableLanguage language) {
-        List<Translation> translation =  entityManager.createQuery(
+        List<Translation> translation = (List<Translation>) entityManager.createQuery(
                 "SELECT t FROM Translation t WHERE t.code = :code AND t.language = :language")
                 .setParameter("code", code)
                 .setParameter("language", language)

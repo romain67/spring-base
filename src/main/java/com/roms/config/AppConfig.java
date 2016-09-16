@@ -11,7 +11,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.web.context.support.StandardServletEnvironment;
 import org.yaml.snakeyaml.Yaml;
 import java.io.*;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 
 @Configuration
 public class AppConfig {
@@ -72,8 +72,8 @@ public class AppConfig {
             throws IOException {
         ClassPathResource classPathResource = new ClassPathResource(resourcePath);
         Yaml yamlFile = new Yaml();
-        LinkedHashMap configByEnv = (LinkedHashMap) yamlFile.load(new FileInputStream(classPathResource.getFile()));
-        LinkedHashMap configMap = (LinkedHashMap) configByEnv.get(environmentName);
+        HashMap<String, Object> configByEnv = (HashMap<String, Object>) yamlFile.load(new FileInputStream(classPathResource.getFile()));
+        HashMap<String, String> configMap = (HashMap<String, String>) configByEnv.get(environmentName);
 
         Yaml generatedYaml = new Yaml();
         String defaultConfigYamlString = generatedYaml.dump(configMap);

@@ -13,7 +13,8 @@ public class DatabaseDrivenMessageSource extends AbstractMessageSource {
 
     private TranslationDao translationDao;
     private static final Logger logger = LogManager.getLogger(DatabaseDrivenMessageSource.class);
-    private Map<Translation.AvailableLanguage, Map> translations = new HashMap<Translation.AvailableLanguage, Map>();
+    private Map<Translation.AvailableLanguage, Map<String, String>> translations =
+            new HashMap<Translation.AvailableLanguage, Map<String, String>>();
 
     public DatabaseDrivenMessageSource(TranslationDao translationDao) {
         this.translationDao = translationDao;

@@ -51,9 +51,6 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
     @Bean
     public DatabaseDrivenMessageSource messageSource() {
         DatabaseDrivenMessageSource messageSource = new DatabaseDrivenMessageSource(translationDao);
-        messageSource.setUseCodeAsDefaultMessage(Boolean.parseBoolean(
-                environment.getRequiredProperty("i18n.message_source.use_code_as_default_message")
-        ));
         messageSource.setParentMessageSource(propertiesMessageSource());
         return messageSource;
     }

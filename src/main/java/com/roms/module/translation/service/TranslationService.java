@@ -37,6 +37,10 @@ public class TranslationService {
 		return this.translationDao.findAll();
 	}
 
+	public Translation findByCodeAndLanguage(String code, Translation.AvailableLanguage language) {
+		return this.translationDao.findByCodeAndLanguage(code, language);
+	}
+
     @Transactional
 	public void delete(long id) {
 		Translation translation = this.find(id);

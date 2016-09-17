@@ -10,13 +10,14 @@ import java.util.ArrayList;
 public class RestErrorMessageDto 
 {
 	private String message;
-	
 	private String errorCode;
-	
 	private ArrayList<RestFieldErrorsDto> errors = new ArrayList<RestFieldErrorsDto>();
-	
-	public RestErrorMessageDto(String message, String errorCode) 
-	{
+
+	public RestErrorMessageDto() {
+
+	}
+
+	public RestErrorMessageDto(String message, String errorCode) {
 		this.setMessage(message);
 		this.setErrorCode(errorCode);
 	}

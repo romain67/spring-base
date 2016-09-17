@@ -8,13 +8,14 @@ package com.roms.library.controller.error.dto;
 public class RestFieldErrorsDto 
 {
 	private String field;
-	
 	private String errorCode;
-	
 	private String errorMessage;
-	
-	public RestFieldErrorsDto(String field, String errorCode, String errorMessage) 
-	{
+
+	public RestFieldErrorsDto() {
+
+	}
+
+	public RestFieldErrorsDto(String field, String errorCode, String errorMessage) {
 		this.field = field;
 		this.errorCode = errorCode;
 		this.errorMessage = errorMessage;

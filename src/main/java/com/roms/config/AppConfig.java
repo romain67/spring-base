@@ -34,19 +34,18 @@ public class AppConfig {
         MutablePropertySources propertySources = this.environment.getPropertySources();
 
         // Load config for current env from config.yml
-        YamlPropertiesFactoryBean yamlDefault = this.getYamlPropertiesFactoryBeanByEnv(CONFIG_FILE, DEFAULT_ENVIRONMENT_NAME);
+        YamlPropertiesFactoryBean yamlDefault = getYamlPropertiesFactoryBeanByEnv(CONFIG_FILE, DEFAULT_ENVIRONMENT_NAME);
         propertySources.addFirst(new PropertiesPropertySource("configDefault", yamlDefault.getObject()));
 
         // Load config to override default env if different
         String activeProfile = this.environment.getActiveProfiles()[0];
         if (DEFAULT_ENVIRONMENT_NAME.compareTo(activeProfile) != 0) {
-            YamlPropertiesFactoryBean yamlCurrentEnv = this.getYamlPropertiesFactoryBeanByEnv(CONFIG_FILE, activeProfile);
+            YamlPropertiesFactoryBean yamlCurrentEnv = getYamlPropertiesFactoryBeanByEnv(CONFIG_FILE, activeProfile);
             propertySources.addFirst(new PropertiesPropertySource("configCurrent", yamlCurrentEnv.getObject()));
         }
 
         // Load local config from local.config.yml
-        YamlPropertiesFactoryBean yamlLocal = new YamlPropertiesFactoryBean();
-        yamlLocal.setResources(new ClassPathResource(LOCAL_CONFIG_FILE));
+        YamlPropertiesFactoryBean yamlLocal = getYamlPropertiesFactoryBeanByEnv(LOCAL_CONFIG_FILE, activeProfile);
         propertySources.addFirst(new PropertiesPropertySource("configLocal", yamlLocal.getObject()));
 
         return propertySources;

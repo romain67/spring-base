@@ -36,7 +36,4 @@ dev:
   resource:
     cache_time: 0
 test:
-  database:
-    url: jdbc:mysql://localhost:3306/springtest
-    username: springtest
-    password: springtest
+  name: \[TEST\] Spring Base API

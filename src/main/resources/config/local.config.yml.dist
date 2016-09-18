@@ -1,6 +1,11 @@
-url:
-database:
-  driver:
-  url:
-  username:
-  password:
+dev:
+    url:
+    database:
+      url:
+      username:
+      password:
+test:
+    database:
+      url:
+      username:
+      password:

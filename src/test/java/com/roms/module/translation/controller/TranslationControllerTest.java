@@ -1,5 +1,7 @@
 package com.roms.module.translation.controller;
 
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.roms.config.AppConfig;
 import com.roms.config.MvcConfig;
 import com.roms.library.controller.error.dto.RestErrorMessageDto;
@@ -13,7 +15,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -22,6 +28,7 @@ import org.springframework.web.context.WebApplicationContext;
 import com.roms.library.test.TestUtil;
 import java.util.ArrayList;
 
+import static com.github.springtestdbunit.annotation.DatabaseOperation.DELETE_ALL;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -31,6 +38,10 @@ import static org.junit.Assert.*;
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration(classes= {AppConfig.class, MvcConfig.class})
+@TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
+        DirtiesContextTestExecutionListener.class,
+        TransactionalTestExecutionListener.class,
+        DbUnitTestExecutionListener.class})
 public class TranslationControllerTest {
 
     @Autowired
@@ -54,17 +65,24 @@ public class TranslationControllerTest {
     }
 
     @Test
+    @DatabaseSetup("sampleData.xml")
     public void testGetAll() throws Exception {
         this.mockMvc.perform(get("/translation").with(anonymous()))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(content().string("[{\"id\":1,\"code\":\"test.code\"," + "\"language\":\"EN\"," +
+                        "\"value\":\"translation en\",\"createdAt\":\"2016-09-15 01:20:20\"," +
+                        "\"updatedAt\":\"2016-09-15 01:20:20\"},{\"id\":2,\"code\":\"test.code\"," +
+                        "\"language\":\"FR\",\"value\":\"translation fr\",\"createdAt\":\"2016-09-15 01:20:20\"," +
+                        "\"updatedAt\":\"2016-09-15 01:20:20\"}]"));
     }
 
     @Test
+    @DatabaseSetup("sampleData.xml")
     public void testGet() throws Exception {
-        this.mockMvc.perform(get("/translation/7").with(anonymous()))
+        this.mockMvc.perform(get("/translation/1").with(anonymous()))
                 .andExpect(status().isOk())
-                .andExpect(content().string("{\"id\":7,\"code\":\"error.translation.invalid_language\"," +
-                        "\"language\":\"EN\",\"value\":\"Invalid language\",\"createdAt\":\"2016-09-15 01:20:20\"," +
+                .andExpect(content().string("{\"id\":1,\"code\":\"test.code\"," + "\"language\":\"EN\"," +
+                        "\"value\":\"translation en\",\"createdAt\":\"2016-09-15 01:20:20\"," +
                         "\"updatedAt\":\"2016-09-15 01:20:20\"}"));
     }
 
@@ -94,18 +112,18 @@ public class TranslationControllerTest {
     }
 
     @Test
+    @DatabaseSetup("sampleData.xml")
     public void testPost() throws Exception {
-        TranslationCreateDto dto = makeTranslationCreateDto("test.code", "EN", "prout");
+        TranslationCreateDto dto = makeTranslationCreateDto("test.code.create", "EN", "prout");
         this.mockMvc.perform(post("/translation").with(user("user").roles("TRANSLATOR"))
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(dto)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(TestUtil.APPLICATION_JSON_UTF8));
 
-        Translation record = translationService.findByCodeAndLanguage("test.code", Translation.AvailableLanguage.EN);
+        Translation record = translationService.findByCodeAndLanguage("test.code.create",
+                Translation.AvailableLanguage.EN);
         assertNotNull(record);
-
-        translationService.delete(record.getId());
     }
 
     private TranslationCreateDto makeTranslationCreateDto(String code, String language, String value) {

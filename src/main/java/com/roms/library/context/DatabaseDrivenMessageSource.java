@@ -42,13 +42,13 @@ public class DatabaseDrivenMessageSource extends AbstractMessageSource {
         Translation.AvailableLanguage language = Translation.AvailableLanguage.fromCode(locale.getLanguage());
         if (language == null) {
             logger.error("Locale '" + locale.getLanguage() + "' was not found in available locales");
-            return null;
+            return code;
         }
 
         Map<String, String> languageTranslations = translations.get(language);
         if (languageTranslations == null) {
             logger.warn("Locale '" + language.code() + "' was not found in translations");
-            return null;
+            return code;
         }
 
         String translation = languageTranslations.get(code);
@@ -57,7 +57,7 @@ public class DatabaseDrivenMessageSource extends AbstractMessageSource {
                 translation = getParentMessageSource().getMessage(code, null, locale);
             } catch (NoSuchMessageException e) {
                 logger.warn("Code '" + code + "' for Locale '" + language.code() + "' was not found in translations");
-                return null;
+                return code;
             }
         }
 

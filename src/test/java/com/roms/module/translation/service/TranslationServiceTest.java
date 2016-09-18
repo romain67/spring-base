@@ -17,10 +17,7 @@ import org.springframework.test.context.support.DirtiesContextTestExecutionListe
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import org.springframework.test.context.web.WebAppConfiguration;
 import java.util.Locale;
-
-import static com.github.springtestdbunit.annotation.DatabaseOperation.DELETE_ALL;
 import static org.junit.Assert.*;
-
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration

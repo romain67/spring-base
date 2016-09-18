@@ -28,7 +28,6 @@ import org.springframework.web.context.WebApplicationContext;
 import com.roms.library.test.TestUtil;
 import java.util.ArrayList;
 
-import static com.github.springtestdbunit.annotation.DatabaseOperation.DELETE_ALL;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;

@@ -10,6 +10,7 @@ production:
     dialect: org.hibernate.dialect.MySQL5Dialect
     show_sql: false
     hbm2ddl.auto: update
+    jdbc_batch_size: 20
     entity_manager:
       packages_to_scan:
         - com.roms.module.user.domain.model
@@ -23,9 +24,18 @@ production:
         cookie_time: 31536000 # 1 year
   resource:
     cache_time: 31536000 # 1 year
+  mail:
+    smtp:
+      host:
+      username:
+      password:
+      port: 25
+    default_sender: noreply@springbaseroms.ch
 staging:
   url:
   name: \[STAGING\] Spring Base API
+  mail:
+    redirect_to: staging@springbaseroms.ch
 dev:
   name: \[DEVELOP\] Spring Base API
   hibernate:
@@ -35,5 +45,10 @@ dev:
       cache_time: -1
   resource:
     cache_time: 0
+  mail:
+    redirect_to:
 test:
   name: \[TEST\] Spring Base API
+  mail:
+    dry_mode: true
+

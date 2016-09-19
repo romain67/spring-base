@@ -4,6 +4,13 @@ dev:
       url:
       username:
       password:
+  mail:
+    smtp:
+      host:
+      username:
+      password:
+      port:
+    redirect_to:
 test:
     database:
       url:

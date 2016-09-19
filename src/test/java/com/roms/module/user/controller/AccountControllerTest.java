@@ -8,6 +8,7 @@ import com.roms.config.AppConfig;
 import com.roms.config.MvcConfig;
 import com.roms.library.test.TestUtil;
 import com.roms.module.user.domain.dto.UserRegisterDto;
+import com.roms.module.user.domain.model.Role;
 import com.roms.module.user.domain.model.User;
 import com.roms.module.user.service.UserService;
 import org.junit.Before;
@@ -24,6 +25,8 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+
+import java.util.Collection;
 
 import static org.junit.Assert.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
@@ -71,6 +74,10 @@ public class AccountControllerTest {
 
         User expectedUser = userService.findByEmail("roms@romain.com");
         assertNotNull(expectedUser);
+
+        Collection<Role> roles = expectedUser.getRoles();
+        assertTrue(roles.iterator().hasNext());
+        assertEquals("ROLE_USER", roles.iterator().next().getName());
     }
 
     @Test

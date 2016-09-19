@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+    <users id="1" first_name="Philippe" last_name="Maurice" created_at="2016-09-15 01:20:20" username="philmau"
+           username_canonical="philmau" email="philmau@marl.com" active="0"
+           password="$2a$10$Oqs3vIpg7X.PeUHJMmjW6ecHFwBtkbm/oWhmYSjSfj9.sNrPgzI4." token="03ab4db1d78048bafd886728ea7fcc8a"/>
+    <roles id="1" name="ROLE_USER" />
+    <users_roles user_id="1" role_id="1" />
+</dataset>

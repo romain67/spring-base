@@ -5,6 +5,7 @@ import com.roms.library.exception.RegisterErrorException;
 import com.roms.module.user.domain.dto.UserRegisterDto;
 import com.roms.module.user.service.AccountService;
 import com.roms.module.user.domain.model.User;
+import com.roms.module.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,9 @@ public class AccountController {
 
 	@Autowired
 	private AccountService accountService;
+
+	@Autowired
+	private UserService userService;
 
     /**
      * Register user
@@ -35,6 +39,11 @@ public class AccountController {
     @RequestMapping(value="activate/{token}", method = RequestMethod.GET)
     public void activate(@PathVariable("token") String token) {
         accountService.activate(token);
+    }
+
+    @RequestMapping(value="my-user", method = RequestMethod.GET)
+    public ResponseEntity<User> myUser() {
+        return new ResponseEntity<User>(userService.getCurrentUser(), HttpStatus.OK);
     }
 
 }

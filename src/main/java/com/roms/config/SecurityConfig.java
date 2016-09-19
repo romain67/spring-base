@@ -62,13 +62,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // User only for admin
                 .antMatchers("/user/**").hasAuthority(Role.ROLE_ADMIN)
 
-                // Account Register only for anonymous
-                .antMatchers(HttpMethod.POST, "/account/register").denyAll()
+                // Account
                 .antMatchers(HttpMethod.POST, "/account/register").hasAuthority(Role.ROLE_ANONYMOUS)
-
-                // Account activate only for anonymous
-                .antMatchers(HttpMethod.GET, "/account/activate/**").denyAll()
                 .antMatchers(HttpMethod.GET, "/account/activate/**").hasAuthority(Role.ROLE_ANONYMOUS)
+                .antMatchers(HttpMethod.GET, "/account/my-user").authenticated()
 
                 // Translation for all read only
                 .antMatchers(HttpMethod.GET, "/translation/**").permitAll()

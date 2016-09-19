@@ -8,6 +8,8 @@ import org.hibernate.ObjectNotFoundException;
 import org.joda.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.roms.module.user.domain.dao.UserDao;
@@ -83,6 +85,12 @@ public class UserService  {
     public void updateUserLastLogin(User user) {
         user.setLastLogin(LocalDateTime.now());
         this.save(user);
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    public User getCurrentUser() {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return findByEmail(userDetails.getUsername());
     }
 
 }

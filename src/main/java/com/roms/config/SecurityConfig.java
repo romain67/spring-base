@@ -27,7 +27,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     public static final String REMEMBER_ME_KEY = "rememberme_key";
 
-    private static final int ENCODING_PASSWORD_STRENGTH = 16;
+    private static final int ENCODING_PASSWORD_STRENGTH = 10;
 
     @Autowired
     UserDetailsService userDetailsService;
@@ -59,9 +59,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.headers().disable()
             .csrf().disable()
             .authorizeRequests()
-                .antMatchers("/user/**").hasAnyAuthority(Role.ROLE_ADMIN)
+                // User only for admin
+                .antMatchers("/user/**").hasAuthority(Role.ROLE_ADMIN)
+
+                // Account Register only for anonymous
+                .antMatchers(HttpMethod.POST, "/account/register").denyAll()
+                .antMatchers(HttpMethod.POST, "/account/register").hasAuthority(Role.ROLE_ANONYMOUS)
+
+                // Account activate only for anonymous
+                .antMatchers(HttpMethod.GET, "/account/activate/**").denyAll()
+                .antMatchers(HttpMethod.GET, "/account/activate/**").hasAuthority(Role.ROLE_ANONYMOUS)
+
+                // Translation for all read only
                 .antMatchers(HttpMethod.GET, "/translation/**").permitAll()
                 .antMatchers("/translation/**").hasAnyAuthority(Role.ROLE_ADMIN, Role.ROLE_TRANSLATOR)
+
                 .anyRequest().permitAll()
                 .and()
              .exceptionHandling()

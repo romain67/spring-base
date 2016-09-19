@@ -4,8 +4,6 @@ import com.roms.library.dao.GenericDaoImplementation;
 import com.roms.library.dao.UniqueValidable;
 import com.roms.module.user.domain.model.User;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
-import java.util.Collection;
 import java.util.List;
 
 @Repository("userDao")
@@ -26,6 +24,17 @@ public class UserDaoImpl extends GenericDaoImplementation<User>
 
         return users.size() > 0 ? users.get(0) : null;
 	}
+
+    public User findByToken(String token) {
+        List<User> users = (List<User>) entityManager.createQuery(
+                "SELECT DISTINCT u FROM User u " +
+                        "LEFT JOIN FETCH u.roles r " +
+                        "WHERE u.token = :token")
+                .setParameter("token", token)
+                .getResultList();
+
+        return users.size() > 0 ? users.get(0) : null;
+    }
 
     public List<User> findAll() {
         return (List<User>) entityManager.createQuery(

@@ -5,8 +5,7 @@ import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 
-public class UserCreateDto
-{
+public class UserCreateDto {
 
 	@Length(min = 2, max = 255)
 	private String firstName;

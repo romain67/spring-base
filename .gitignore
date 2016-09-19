@@ -1,3 +1,4 @@
 /src/main/resources/config/local.config.yml
 /target
 /logs
+/src/main/resources/persistence.xml

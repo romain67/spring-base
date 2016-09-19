@@ -7,6 +7,7 @@ import com.roms.module.user.domain.model.Role;
 import org.hibernate.ObjectNotFoundException;
 import org.joda.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.roms.module.user.domain.dao.UserDao;
@@ -37,6 +38,10 @@ public class UserService  {
     public User findByEmail(String email) {
         return userDao.findByEmail(email);
     }
+
+    public User findByToken(String token) {
+        return userDao.findByToken(token);
+    }
 	
 	public Collection<User> findAll() {
 		return this.userDao.findAll();
@@ -45,7 +50,6 @@ public class UserService  {
     @Transactional
 	public void delete(long id) {
 		User user = this.find(id);
-		
 		if (user == null) {
 			throw new ObjectNotFoundException(id, "user");
 		}
@@ -54,8 +58,8 @@ public class UserService  {
 	}
 
     @Transactional
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
 	public User create(UserCreateDto userDto) {
-
     	User user = new User();
     	user.setFirstName(userDto.getFirstName());
     	user.setLastName(userDto.getLastName());
@@ -71,9 +75,12 @@ public class UserService  {
 		return user;
 	}
 
-    @Transactional
 	public void updateUserLastLogin(Long userId) {
-        User user = this.find(userId);
+        updateUserLastLogin(this.find(userId));
+    }
+
+    @Transactional
+    public void updateUserLastLogin(User user) {
         user.setLastLogin(LocalDateTime.now());
         this.save(user);
     }

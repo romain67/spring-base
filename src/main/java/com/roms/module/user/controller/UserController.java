@@ -53,8 +53,7 @@ public class UserController {
      * @param userDto
      */
 	@RequestMapping(method = RequestMethod.POST)
-	public ResponseEntity<User> post(@Validated @RequestBody UserCreateDto userDto)
-	{
+	public ResponseEntity<User> post(@Validated @RequestBody UserCreateDto userDto) {
 		User user = userService.create(userDto);
 		return new ResponseEntity<User>(user, HttpStatus.OK);
 	}
@@ -64,8 +63,7 @@ public class UserController {
      * @param userDto
      */
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-	public void put(@Validated @RequestBody UserCreateDto userDto) 
-	{
+	public void put(@Validated @RequestBody UserCreateDto userDto) {
 		
 	}
 

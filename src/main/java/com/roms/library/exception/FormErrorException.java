@@ -1,6 +1,6 @@
 package com.roms.library.exception;
 
-public class FormErrorException extends Exception {
+public class FormErrorException extends RuntimeException {
 
     private static final long serialVersionUID = -8953242841606759797L;
 

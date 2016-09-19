@@ -72,6 +72,11 @@ public class User {
                 inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private Collection<Role> roles = new ArrayList<Role>();
 
+    @Column(name="token", unique=true)
+    @JsonIgnore
+    @Length(max = 32)
+	private String token;
+
 	public long getId() {
 		return id;
 	}
@@ -176,4 +181,11 @@ public class User {
         }
     }
 
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
 }

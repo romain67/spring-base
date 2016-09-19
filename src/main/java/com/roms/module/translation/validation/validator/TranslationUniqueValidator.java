@@ -20,7 +20,7 @@ public class TranslationUniqueValidator implements ConstraintValidator<Translati
         boolean isValid = translationService.isUnique(dto);
         if (! isValid) {
             context.disableDefaultConstraintViolation();
-            context.buildConstraintViolationWithTemplate("Translation already exists")
+            context.buildConstraintViolationWithTemplate("error.translation.unique")
                     .addPropertyNode("code")
                     .addConstraintViolation();
         }

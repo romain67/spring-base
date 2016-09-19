@@ -8,7 +8,6 @@ import org.springframework.dao.annotation.PersistenceExceptionTranslationPostPro
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
-import org.springframework.orm.jpa.vendor.Database;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -60,21 +59,12 @@ public class DataSourceConfig {
         return new PersistenceExceptionTranslationPostProcessor();
     }
 
-    @Bean(name = "jpaVendorAdapter")
-    public JpaVendorAdapter jpaVendorAdapter() {
-        HibernateJpaVendorAdapter jpaVendorAdapter = new HibernateJpaVendorAdapter();
-        jpaVendorAdapter.setShowSql(Boolean.valueOf(environment.getRequiredProperty("hibernate.show_sql")));
-        jpaVendorAdapter.setDatabase(Database.MYSQL);
-        jpaVendorAdapter.setDatabasePlatform(environment.getRequiredProperty("hibernate.dialect"));
-        jpaVendorAdapter.setGenerateDdl(false);
-        return jpaVendorAdapter;
-    }
-
     private Properties additionalProperties() {
         Properties properties = new Properties();
         properties.setProperty("hibernate.hbm2ddl.auto", environment.getRequiredProperty("hibernate.hbm2ddl.auto"));
         properties.setProperty("hibernate.show_sql", environment.getRequiredProperty("hibernate.show_sql"));
         properties.setProperty("hibernate.dialect", environment.getRequiredProperty("hibernate.dialect"));
+        properties.setProperty("hibernate.jdbc.batch_size", environment.getRequiredProperty("hibernate.jdbc_batch_size"));
         return properties;
     }
 
@@ -95,7 +85,7 @@ public class DataSourceConfig {
             }
         }
 
-        return (String[]) packageList.toArray(new String[0]);
+        return packageList.toArray(new String[0]);
     }
 
 }

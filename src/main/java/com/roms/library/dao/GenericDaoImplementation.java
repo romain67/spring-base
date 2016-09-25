@@ -48,7 +48,7 @@ public class GenericDaoImplementation<T> implements GenericDaoInterface<T> {
     }
 
     @Override
-    public T edit(T emp) {
+    public T update(T emp) {
         try{
             return entityManager.merge(emp);
         } catch(Exception ex) {

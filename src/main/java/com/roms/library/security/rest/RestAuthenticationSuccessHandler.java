@@ -1,6 +1,5 @@
 package com.roms.library.security.rest;
 
-import com.roms.module.user.domain.model.User;
 import com.roms.module.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -35,8 +34,7 @@ public class RestAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuc
     }
 
     private void updateUserLastLogin(com.roms.library.security.userdetails.User userDetails) {
-        User user = userDetails.getUserEntity();
-        userService.updateUserLastLogin(user.getId());
+        userService.updateUserLastLogin(userDetails.getUserEntity());
     }
 
 }

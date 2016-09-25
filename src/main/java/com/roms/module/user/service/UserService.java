@@ -77,14 +77,10 @@ public class UserService  {
 		return user;
 	}
 
-	public void updateUserLastLogin(Long userId) {
-        updateUserLastLogin(this.find(userId));
-    }
-
     @Transactional
     public void updateUserLastLogin(User user) {
         user.setLastLogin(LocalDateTime.now());
-        this.save(user);
+        userDao.update(user);
     }
 
     @PreAuthorize("isAuthenticated()")

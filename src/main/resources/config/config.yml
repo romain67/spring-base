@@ -31,6 +31,7 @@ production:
       password:
       port: 25
     default_sender: noreply@springbaseroms.ch
+    dry_mode: false
 staging:
   url:
   name: \[STAGING\] Spring Base API
@@ -46,7 +47,7 @@ dev:
   resource:
     cache_time: 0
   mail:
-    redirect_to:
+    redirect_to: dev@springbaseroms.ch
 test:
   name: \[TEST\] Spring Base API
   mail:

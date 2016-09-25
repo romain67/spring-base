@@ -3,9 +3,6 @@ package com.roms.library.security.userdetails;
 import org.springframework.security.core.GrantedAuthority;
 import java.util.Collection;
 
-/**
- * Created by romain on 04/07/2016.
- */
 public class User extends org.springframework.security.core.userdetails.User {
 
     private static final long serialVersionUID = 5985765322810028590L;

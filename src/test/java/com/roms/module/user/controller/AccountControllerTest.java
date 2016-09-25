@@ -90,8 +90,14 @@ public class AccountControllerTest {
     }
 
     @Test
+    @DatabaseSetup("sampleData.xml")
     public void myUser() throws Exception {
-
+        this.mockMvc.perform(get("/account/my-user").with(user("odile@deray.nul")))
+                .andExpect(status().isOk())
+                .andExpect(content().string("{\"id\":2,\"firstName\":\"Odile\",\"lastName\":\"Deray\"," +
+                        "\"username\":\"odile\",\"usernameCanonical\":\"odile\",\"email\":\"odile@deray.nul\"," +
+                        "\"active\":1,\"createdAt\":\"2016-09-15 01:20:20\",\"lastLogin\":\"2016-09-16 01:20:20\"," +
+                        "\"roles\":[{\"name\":\"ROLE_USER\"}]}"));
     }
 
     private UserRegisterDto makeUserRegisterDto(String firstName, String lastName, String username, String email,

@@ -8,20 +8,27 @@ import com.roms.module.user.domain.dao.RoleDao;
 import com.roms.module.user.domain.dto.UserRegisterDto;
 import com.roms.module.user.domain.model.Role;
 import com.roms.module.user.domain.model.User;
+import freemarker.template.Configuration;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.joda.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.MailException;
-import org.springframework.mail.MailSender;
-import org.springframework.mail.SimpleMailMessage;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
+import javax.mail.internet.MimeMessage;
 import java.math.BigInteger;
 import java.security.MessageDigest;
+import java.util.HashMap;
+import java.util.Locale;
 import java.util.UUID;
 
 @Service("accountService")
@@ -39,13 +46,16 @@ public class AccountService {
     private RoleDao roleDao;
 
     @Autowired
-    private MailSender mailSender;
+    private JavaMailSender mailSender;
 
     @Autowired
-    private SimpleMailMessage templateMessage;
+    private Configuration freemarkerConfiguration;
 
     @Autowired
     private AutoLogin autoLogin;
+
+    @Autowired
+    private MessageSource messageSource;
 
     @Transactional
     @PreAuthorize("isAnonymous()")
@@ -66,7 +76,7 @@ public class AccountService {
 
         try {
             sendActivationEmail(user, registerDto.getActivationUrl());
-        } catch (MailException e) {
+        } catch (Exception e) {
             throw new RegisterErrorException(e.getMessage());
         }
 
@@ -86,14 +96,28 @@ public class AccountService {
         autoLogin.authenticateUserAndInitializeSession(user);
     }
 
-	private void sendActivationEmail(User user, String activationUrl) throws MailException {
-        activationUrl = activationUrl.replace("{token}", user.getToken());
-        SimpleMailMessage msg = new SimpleMailMessage(this.templateMessage);
-        msg.setTo(user.getEmail());
-        msg.setText("Dear " + user.getUsername() + ", \n" +
-                "Your activation link: "+ activationUrl);
+	private void sendActivationEmail(final User user, final String activationUrl) {
+        MimeMessagePreparator preparator = new MimeMessagePreparator() {
+            public void prepare(MimeMessage mimeMessage) throws Exception {
+                Locale locale = LocaleContextHolder.getLocale();
+                MimeMessageHelper message = new MimeMessageHelper(mimeMessage);
 
-        this.mailSender.send(msg);
+                message.setTo(user.getEmail());
+                message.setSubject(messageSource.getMessage("account.register.mail.subject", null, locale));
+
+                HashMap<String, Object> model = new HashMap<String, Object>();
+                model.put("username", user.getUsername());
+                model.put("activationUrl", activationUrl.replace("{token}", user.getToken()));
+                model.put("locale", locale);
+
+                String content = FreeMarkerTemplateUtils.processTemplateIntoString(
+                        freemarkerConfiguration.getTemplate("mail/account-activation.ftl", "UTF-8"), model);
+
+                message.setText(content, true);
+            }
+        };
+
+        this.mailSender.send(preparator);
     }
 
 	private String makeToken(User user) {

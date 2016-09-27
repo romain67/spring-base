@@ -10,9 +10,9 @@ import com.roms.module.translation.domain.dao.TranslationDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
-import org.springframework.mail.MailSender;
-import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.ui.freemarker.FreeMarkerConfigurationFactoryBean;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -21,6 +21,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.springframework.core.env.Environment;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Properties;
 import org.springframework.validation.Validator;
@@ -91,7 +92,7 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
     }
 
     @Bean
-    public MailSender mailSender() {
+    public JavaMailSender mailSender() {
         JavaMailSenderImpl sender;
 
         if (Boolean.parseBoolean(environment.getProperty("mail.dry_mode"))) { // Dry mode
@@ -120,14 +121,24 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
         Session session = Session.getDefaultInstance(properties, auth);
         sender.setSession(session);
 
+        // TODO: inject default_sender to default mimeMessage
+        //environment.getRequiredProperty("mail.default_sender");
+
         return sender;
     }
 
     @Bean
-    public SimpleMailMessage simpleMailMessage() {
-        SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-        simpleMailMessage.setFrom(environment.getRequiredProperty("mail.default_sender"));
-        return simpleMailMessage;
+    public FreeMarkerConfigurationFactoryBean freemarkerConfiguration() {
+        FreeMarkerConfigurationFactoryBean configFactory = new FreeMarkerConfigurationFactoryBean();
+        configFactory.setTemplateLoaderPaths("/WEB-INF/views/");
+        configFactory.setDefaultEncoding("UTF-8");
+        configFactory.setPreferFileSystemAccess(false);
+
+        HashMap<String, Object> variables = new HashMap<String, Object>();
+        variables.put("messageSource", messageSource());
+        configFactory.setFreemarkerVariables(variables);
+
+        return configFactory;
     }
 
 }

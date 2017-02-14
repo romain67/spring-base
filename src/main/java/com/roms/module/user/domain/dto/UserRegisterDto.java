@@ -1,11 +1,13 @@
 package com.roms.module.user.domain.dto;
 
 import com.roms.library.validation.constraints.Unique;
+import com.roms.module.user.validation.constraints.RegisterPasswordConfirm;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.URL;
 
+@RegisterPasswordConfirm()
 public class UserRegisterDto {
 
 	@Length(min = 2, max = 255)

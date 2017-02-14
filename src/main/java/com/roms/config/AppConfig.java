@@ -34,7 +34,8 @@ public class AppConfig {
         MutablePropertySources propertySources = this.environment.getPropertySources();
 
         // Load config for current env from config.yml
-        YamlPropertiesFactoryBean yamlDefault = getYamlPropertiesFactoryBeanByEnv(CONFIG_FILE, DEFAULT_ENVIRONMENT_NAME);
+        YamlPropertiesFactoryBean yamlDefault = getYamlPropertiesFactoryBeanByEnv(CONFIG_FILE,
+                DEFAULT_ENVIRONMENT_NAME);
         propertySources.addFirst(new PropertiesPropertySource("configDefault", yamlDefault.getObject()));
 
         // Load config to override default env if different
@@ -71,7 +72,8 @@ public class AppConfig {
             throws IOException {
         ClassPathResource classPathResource = new ClassPathResource(resourcePath);
         Yaml yamlFile = new Yaml();
-        HashMap<String, Object> configByEnv = (HashMap<String, Object>) yamlFile.load(new FileInputStream(classPathResource.getFile()));
+        HashMap<String, Object> configByEnv = (HashMap<String, Object>) yamlFile.load(
+                new FileInputStream(classPathResource.getFile()));
         HashMap<String, String> configMap = (HashMap<String, String>) configByEnv.get(environmentName);
 
         Yaml generatedYaml = new Yaml();

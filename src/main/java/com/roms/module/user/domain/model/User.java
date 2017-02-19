@@ -46,6 +46,10 @@ public class User {
 	@Email
 	private String email;
 
+	@Column(name="pending_email")
+	@Email
+	private String pendingEmail;
+
 	@Column(name="password")
 	@JsonIgnore
 	@NotBlank
@@ -123,6 +127,14 @@ public class User {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public String getPendingEmail() {
+		return pendingEmail;
+	}
+
+	public void setPendingEmail(String pendingEmail) {
+		this.pendingEmail = pendingEmail;
 	}
 
 	public String getPassword() {

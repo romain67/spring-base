@@ -2,6 +2,7 @@ package com.roms.module.user.controller;
 
 import com.roms.library.exception.ControllerErrorException;
 import com.roms.library.exception.RegisterErrorException;
+import com.roms.module.user.domain.dto.ChangeEmailDto;
 import com.roms.module.user.domain.dto.ForgotPasswordDto;
 import com.roms.module.user.domain.dto.ResetPasswordDto;
 import com.roms.module.user.domain.dto.UserRegisterDto;
@@ -41,6 +42,16 @@ public class AccountController {
     @RequestMapping(value="activate/{token}", method = RequestMethod.GET)
     public void activate(@PathVariable("token") String token) {
         accountService.activate(token);
+    }
+
+    @RequestMapping(value="change-email", method = RequestMethod.POST)
+    public void changeEmail(@Validated @RequestBody ChangeEmailDto changeEmailDto) {
+        accountService.changeEmail(changeEmailDto);
+    }
+
+    @RequestMapping(value="active-email/{token}", method = RequestMethod.GET)
+    public void activeEmail(@PathVariable("token") String token) {
+        accountService.activeEmail(token);
     }
 
     @RequestMapping(value="forgot-password", method = RequestMethod.POST)

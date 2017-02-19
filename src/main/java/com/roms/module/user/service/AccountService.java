@@ -5,6 +5,7 @@ import com.roms.library.format.StringFormat;
 import com.roms.library.http.exception.NotFoundException;
 import com.roms.library.security.AutoLogin;
 import com.roms.module.user.domain.dao.RoleDao;
+import com.roms.module.user.domain.dto.ChangeEmailDto;
 import com.roms.module.user.domain.dto.ForgotPasswordDto;
 import com.roms.module.user.domain.dto.ResetPasswordDto;
 import com.roms.module.user.domain.dto.UserRegisterDto;
@@ -21,6 +22,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -62,19 +64,19 @@ public class AccountService {
     @Transactional
 	public User register(UserRegisterDto registerDto) throws RegisterErrorException {
         User user = new User();
-        user.setFirstName(registerDto.getFirstName());
-        user.setLastName(registerDto.getLastName());
-        user.setUsername(registerDto.getUsername());
-        user.setUsernameCanonical(StringFormat.canonicalize(registerDto.getUsername()));
-        user.setEmail(registerDto.getEmail());
-        user.setPassword(passwordEncoder.encode(registerDto.getPassword()));
-        user.setActive(0);
-        user.setCreatedAt(LocalDateTime.now());
-        user.addRole(roleDao.findByName(Role.ROLE_USER));
-        user.setToken(makeToken(user));
-        userService.save(user);
 
         try {
+            user.setFirstName(registerDto.getFirstName());
+            user.setLastName(registerDto.getLastName());
+            user.setUsername(registerDto.getUsername());
+            user.setUsernameCanonical(StringFormat.canonicalize(registerDto.getUsername()));
+            user.setEmail(registerDto.getEmail());
+            user.setPassword(passwordEncoder.encode(registerDto.getPassword()));
+            user.setActive(0);
+            user.setCreatedAt(LocalDateTime.now());
+            user.addRole(roleDao.findByName(Role.ROLE_USER));
+            user.setToken(makeToken(user));
+            userService.save(user);
             sendActivationEmail(user, registerDto.getActivationUrl());
         } catch (Exception e) {
             throw new RegisterErrorException(e.getMessage());
@@ -94,6 +96,35 @@ public class AccountService {
         user.setToken(null);
         userService.save(user);
         autoLogin.authenticateUserAndInitializeSession(user);
+    }
+
+    @Transactional
+    public void changeEmail(ChangeEmailDto changeEmailDto) {
+        User currentUser = userService.getCurrentUser();
+        logger.info("User '" + currentUser.getId() + "' has change email from '" + currentUser.getEmail() +
+                "' to '" + changeEmailDto.getEmail() + "'" );
+
+        currentUser.setPendingEmail(changeEmailDto.getEmail());
+        currentUser.setToken(makeToken(currentUser));
+        userService.save(currentUser);
+
+        sendChangeEmailEmail(currentUser, changeEmailDto.getActivationUrl());
+    }
+
+    @Transactional
+    public void activeEmail(String token) {
+        User user = userService.findByToken(token);
+        if (user == null || ! user.isActive()) {
+            throw new NotFoundException("Can not found user to active with token '" + token + "'");
+        }
+        user.setToken(null);
+        user.setEmail(user.getPendingEmail());
+        user.setPendingEmail(null);
+        userService.save(user);
+
+        if (! SecurityContextHolder.getContext().getAuthentication().isAuthenticated()) {
+            autoLogin.authenticateUserAndInitializeSession(user);
+        }
     }
 
     @Transactional
@@ -163,6 +194,30 @@ public class AccountService {
 
                 String content = FreeMarkerTemplateUtils.processTemplateIntoString(
                         freemarkerConfiguration.getTemplate("mail/account-activation.ftl", "UTF-8"), model);
+
+                message.setText(content, true);
+            }
+        };
+
+        this.mailSender.send(preparator);
+    }
+
+	private void sendChangeEmailEmail(final User user, final String activationUrl) {
+        MimeMessagePreparator preparator = new MimeMessagePreparator() {
+            public void prepare(MimeMessage mimeMessage) throws Exception {
+                Locale locale = LocaleContextHolder.getLocale();
+                MimeMessageHelper message = new MimeMessageHelper(mimeMessage);
+
+                message.setTo(user.getEmail());
+                message.setSubject(messageSource.getMessage("account.change_email.mail.subject", null, locale));
+
+                HashMap<String, Object> model = new HashMap<String, Object>();
+                model.put("username", user.getUsername());
+                model.put("activationUrl", activationUrl.replace("{token}", user.getToken()));
+                model.put("locale", locale);
+
+                String content = FreeMarkerTemplateUtils.processTemplateIntoString(
+                        freemarkerConfiguration.getTemplate("mail/account-change-email.ftl", "UTF-8"), model);
 
                 message.setText(content, true);
             }

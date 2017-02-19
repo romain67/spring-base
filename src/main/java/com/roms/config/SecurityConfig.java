@@ -67,6 +67,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/account/activate/**").hasAuthority(Role.ROLE_ANONYMOUS)
                 .antMatchers(HttpMethod.POST, "/account/forgot-password").hasAuthority(Role.ROLE_ANONYMOUS)
                 .antMatchers(HttpMethod.POST, "/account/reset-password").hasAuthority(Role.ROLE_ANONYMOUS)
+                .antMatchers(HttpMethod.POST, "/account/change-email").authenticated()
+                .antMatchers(HttpMethod.GET, "/account/active-email/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/account/my-user").authenticated()
 
                 // Translation for all read only

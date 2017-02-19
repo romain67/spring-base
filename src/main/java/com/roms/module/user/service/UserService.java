@@ -8,6 +8,7 @@ import org.hibernate.ObjectNotFoundException;
 import org.joda.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -87,6 +88,18 @@ public class UserService  {
     public User getCurrentUser() {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return findByEmail(userDetails.getUsername());
+    }
+
+    public boolean currentUserHasRole(String roleName) {
+        for (GrantedAuthority authority : SecurityContextHolder.getContext().getAuthentication().getAuthorities()) {
+            String userRole = authority.getAuthority();
+
+            if (roleName.equals(userRole)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 }

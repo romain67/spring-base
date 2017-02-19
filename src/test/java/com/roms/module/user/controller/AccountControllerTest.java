@@ -7,6 +7,9 @@ import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 import com.roms.config.AppConfig;
 import com.roms.config.MvcConfig;
 import com.roms.library.test.TestUtil;
+import com.roms.module.user.domain.dto.ChangeEmailDto;
+import com.roms.module.user.domain.dto.ForgotPasswordDto;
+import com.roms.module.user.domain.dto.ResetPasswordDto;
 import com.roms.module.user.domain.dto.UserRegisterDto;
 import com.roms.module.user.domain.model.Role;
 import com.roms.module.user.domain.model.User;
@@ -25,9 +28,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-
 import java.util.Collection;
-
 import static org.junit.Assert.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.*;
@@ -91,13 +92,78 @@ public class AccountControllerTest {
 
     @Test
     @DatabaseSetup("sampleData.xml")
+    public void forgotPassword() throws Exception {
+        ForgotPasswordDto dto = new ForgotPasswordDto();
+        dto.setEmail("odile@deray.nul");
+        dto.setActivationUrl("http://www.prout.com/reset-password/{token}");
+
+        this.mockMvc.perform(post("/account/forgot-password").with(anonymous())
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(dto)))
+                .andExpect(status().isOk());
+
+        User user = userService.findByEmail("odile@deray.nul");
+        assertNotNull(user.getToken());
+    }
+
+    @Test
+    @DatabaseSetup("sampleData.xml")
+    public void resetPassword() throws Exception {
+        ResetPasswordDto dto = new ResetPasswordDto();
+        dto.setPassword("123AdrtzscG");
+        dto.setPasswordConfirm("123AdrtzscG");
+        dto.setToken("03ab4db1d78048bafd886728ea7fcc2b");
+
+        this.mockMvc.perform(post("/account/reset-password").with(anonymous())
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(dto)))
+                .andExpect(status().isOk());
+
+        User user = userService.findByEmail("jcd@conclure.dur");
+        assertNull(user.getToken());
+        assertNotEquals("$2a$10$Oqs3vIpg7X.PeUHJMmjW6ecHFwBtkbm/oWhmYSjSfj9.sNrPgzI4.", user.getPassword());
+    }
+
+    @Test
+    @DatabaseSetup("sampleData.xml")
+    public void changeEmail() throws Exception {
+        ChangeEmailDto dto = new ChangeEmailDto();
+        dto.setEmail("new_odile@deray.nul");
+        dto.setEmailConfirm("new_odile@deray.nul");
+        dto.setActivationUrl("http://www.prout.com/active-email/{token}");
+
+        this.mockMvc.perform(post("/account/change-email").with(user("odile@deray.nul"))
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(dto)))
+                .andExpect(status().isOk());
+
+        User user = userService.findByEmail("odile@deray.nul");
+        assertNotNull(user.getToken());
+        assertEquals(user.getPendingEmail(), "new_odile@deray.nul");
+    }
+
+    @Test
+    @DatabaseSetup("sampleData.xml")
+    public void activeEmail() throws Exception {
+        this.mockMvc.perform(get("/account/active-email/03ab4db1d78048bafd886728ea7fc5a9").with(anonymous()))
+                .andExpect(status().isOk())
+                .andExpect(authenticated().withUsername("new_claudy@dikk.be"));
+
+        User user = userService.findByEmail("new_claudy@dikk.be");
+        assertNotNull(user);
+        assertNull(user.getPendingEmail());
+        assertNull(user.getToken());
+    }
+
+    @Test
+    @DatabaseSetup("sampleData.xml")
     public void myUser() throws Exception {
         this.mockMvc.perform(get("/account/my-user").with(user("odile@deray.nul")))
                 .andExpect(status().isOk())
                 .andExpect(content().string("{\"id\":2,\"firstName\":\"Odile\",\"lastName\":\"Deray\"," +
                         "\"username\":\"odile\",\"usernameCanonical\":\"odile\",\"email\":\"odile@deray.nul\"," +
-                        "\"active\":1,\"createdAt\":\"2016-09-15 01:20:20\",\"lastLogin\":\"2016-09-16 01:20:20\"," +
-                        "\"roles\":[{\"name\":\"ROLE_USER\"}]}"));
+                        "\"pendingEmail\":null,\"active\":1,\"createdAt\":\"2016-09-15 01:20:20\"," +
+                        "\"lastLogin\":\"2016-09-16 01:20:20\",\"roles\":[{\"name\":\"ROLE_USER\"}]}"));
     }
 
     private UserRegisterDto makeUserRegisterDto(String firstName, String lastName, String username, String email,

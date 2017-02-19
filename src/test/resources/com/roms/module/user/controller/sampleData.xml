@@ -3,12 +3,23 @@
     <roles id="1" name="ROLE_USER" />
 
     <users id="1" first_name="Philippe" last_name="Maurice" created_at="2016-09-15 01:20:20" username="philmau"
-           username_canonical="philmau" email="philmau@marl.com" active="0"
-           password="$2a$10$Oqs3vIpg7X.PeUHJMmjW6ecHFwBtkbm/oWhmYSjSfj9.sNrPgzI4." token="03ab4db1d78048bafd886728ea7fcc8a"/>
+           username_canonical="philmau" email="philmau@marl.com" active="0" token="03ab4db1d78048bafd886728ea7fcc8a"
+           password="$2a$10$Oqs3vIpg7X.PeUHJMmjW6ecHFwBtkbm/oWhmYSjSfj9.sNrPgzI4." />
     <users_roles user_id="1" role_id="1" />
 
-    <users id="2" first_name="Odile" last_name="Deray" created_at="2016-09-15 01:20:20" username="odile" last_login="2016-09-16 01:20:20"
-           username_canonical="odile" email="odile@deray.nul" active="1"
+    <users id="2" first_name="Odile" last_name="Deray" created_at="2016-09-15 01:20:20" username="odile"
+           last_login="2016-09-16 01:20:20" username_canonical="odile" email="odile@deray.nul" active="1"
            password="$2a$10$Oqs3vIpg7X.PeUHJMmjW6ecHFwBtkbm/oWhmYSjSfj9.sNrPgzI4."/>
     <users_roles user_id="2" role_id="1" />
+
+    <users id="3" first_name="Jean Claude" last_name="Dus" created_at="2016-09-15 01:20:20" username="jcd"
+           username_canonical="jcd" email="jcd@conclure.dur" active="1" token="03ab4db1d78048bafd886728ea7fcc2b"
+           password="$2a$10$Oqs3vIpg7X.PeUHJMmjW6ecHFwBtkbm/oWhmYSjSfj9.sNrPgzI4." last_login="2016-09-16 01:20:20"/>
+    <users_roles user_id="3" role_id="1" />
+
+    <users id="4" first_name="Claudy" last_name="Flocan" created_at="2016-09-15 01:20:20" username="claudy"
+           username_canonical="claudy" email="claudy@dikk.be" pending_email="new_claudy@dikk.be"
+           active="1" token="03ab4db1d78048bafd886728ea7fc5a9" last_login="2016-09-16 01:20:20"
+           password="$2a$10$Oqs3vIpg7X.PeUHJMmjW6ecHFwBtkbm/oWhmYSjSfj9.sNrPgzI4." />
+    <users_roles user_id="4" role_id="1" />
 </dataset>

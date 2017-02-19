@@ -122,7 +122,7 @@ public class AccountService {
         user.setPendingEmail(null);
         userService.save(user);
 
-        if (! SecurityContextHolder.getContext().getAuthentication().isAuthenticated()) {
+        if (userService.currentUserHasRole(Role.ROLE_ANONYMOUS)) {
             autoLogin.authenticateUserAndInitializeSession(user);
         }
     }

@@ -6,4 +6,10 @@
     <users id="2" first_name="Odile" last_name="Deray" created_at="2016-09-15 01:20:20" username="odile"
            username_canonical="odile" email="odile@deray.nul" active="1"
            password="$2a$10$Oqs3vIpg7X.PeUHJMmjW6ecHFwBtkbm/oWhmYSjSfj9.sNrPgzI4."/>
+    <users id="3" first_name="Jean Claude" last_name="Dus" created_at="2016-09-15 01:20:20" username="jcd"
+           username_canonical="jcd" email="jcd@conclure.dur" active="1" token="03ab4db1d78048bafd886728ea7fcc2b"
+           password="$2a$10$Oqs3vIpg7X.PeUHJMmjW6ecHFwBtkbm/oWhmYSjSfj9.sNrPgzI4."/>
+    <users id="4" first_name="Claudy" last_name="Flocan" created_at="2016-09-15 01:20:20" username="claudy"
+           username_canonical="claudy" email="claudy@dikk.be" active="1" token="03ab4db1d78048bafd886728ea7fc5a9"
+           password="$2a$10$Oqs3vIpg7X.PeUHJMmjW6ecHFwBtkbm/oWhmYSjSfj9.sNrPgzI4." />
 </dataset>

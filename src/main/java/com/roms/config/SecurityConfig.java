@@ -25,7 +25,9 @@ import org.springframework.security.web.authentication.logout.HttpStatusReturnin
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    public static final String REMEMBER_ME_KEY = "rememberme_key";
+    public static final String REMEMBER_ME_KEY = "r7aYmQfnZcdxFHuMeBMfTQUW";
+    public static final String REMEMBER_ME_PARAM = "rememberme";
+    public static final int REMEMBER_ME_VALIDITY = 3600 * 24 * 30; // Seconds
 
     private static final int ENCODING_PASSWORD_STRENGTH = 10;
 
@@ -94,10 +96,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler())
                 .deleteCookies("JSESSIONID")
                 .permitAll()
-//                .and()
-//            .rememberMe()
-//                .rememberMeServices(rememberMeServices)
-//                .key(REMEMBER_ME_KEY)
+                .and()
+            .rememberMe()
+                .key(REMEMBER_ME_KEY)
+                .tokenValiditySeconds(REMEMBER_ME_VALIDITY)
+                .rememberMeParameter(REMEMBER_ME_PARAM)
                 .and();
     }
 
